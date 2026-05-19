@@ -60,27 +60,12 @@ public class AuthController {
 
     @GetMapping("/getRouters")
     public ApiResponse<List<Map<String, Object>>> getRouters() {
-        List<Map<String, Object>> routers = new ArrayList<>();
-
-        Map<String, Object> home = new HashMap<>();
-        home.put("name", "Data");
-        home.put("path", "/data");
-        home.put("hidden", false);
-        home.put("component", "data/index");
-        Map<String, Object> homeMeta = new HashMap<>();
-        homeMeta.put("title", "Dashboard");
-        homeMeta.put("icon", "dashboard");
-        homeMeta.put("noCache", false);
-        home.put("meta", homeMeta);
-        routers.add(home);
-
-        return ApiResponse.success(routers);
+        return ApiResponse.success(new ArrayList<>());
     }
 
     @GetMapping("/system/dict/data/type/{dictType}")
     public ApiResponse<List<Map<String, Object>>> getDictData(@PathVariable String dictType) {
-        List<Map<String, Object>> dictData = new ArrayList<>();
-        return ApiResponse.success(dictData);
+        return ApiResponse.success(new ArrayList<>());
     }
 
     @Data
