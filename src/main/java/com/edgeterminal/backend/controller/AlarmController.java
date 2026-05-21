@@ -11,9 +11,13 @@ import java.util.*;
 public class AlarmController {
 
     @GetMapping("/api/alarm/config")
-    public ApiResponse<Map<String, Object>> listAlarmConfig() {
+    public ApiResponse<Map<String, Object>> listAlarmConfig(
+            @RequestParam(defaultValue = "1") int pageNum,
+            @RequestParam(defaultValue = "10") int pageSize) {
         Map<String, Object> data = new HashMap<>();
+        data.put("records", new ArrayList<>());
         data.put("rows", new ArrayList<>());
+        data.put("totalCount", 0);
         data.put("total", 0);
         return ApiResponse.success(data);
     }
