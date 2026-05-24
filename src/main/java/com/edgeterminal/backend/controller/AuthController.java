@@ -1,6 +1,9 @@
 package com.edgeterminal.backend.controller;
 
 import com.edgeterminal.backend.dto.ApiResponse;
+import com.edgeterminal.backend.entity.LoginLog;
+import com.edgeterminal.backend.repository.LoginLogRepository;
+import jakarta.servlet.http.HttpServletRequest;
 import com.edgeterminal.backend.entity.DeviceArea;
 import com.edgeterminal.backend.repository.DeviceAreaRepository;
 import com.edgeterminal.backend.service.AuthService;
@@ -22,15 +25,29 @@ import java.util.Map;
 public class AuthController {
 
     private final AuthService authService;
+    private final LoginLogRepository loginLogRepository;
     private final JwtUtil jwtUtil;
     private final DeviceAreaRepository deviceAreaRepository;
 
     @PostMapping("/auth/login")
-    public ApiResponse<Map<String, Object>> login(@Valid @RequestBody LoginRequest request) {
+    public ApiResponse<Map<String, Object>> login(@Valid @RequestBody LoginRequest request, HttpServletRequest httpRequest) {
+        LoginLog log = new LoginLog();
+        log.setUserName(request.getUsername());
+        log.setIpaddr(httpRequest.getRemoteAddr());
+        log.setLoginLocation("Local");
+        String ua = httpRequest.getHeader("User-Agent");
+        log.setBrowser(ua != null ? ua.substring(0, Math.min(100, ua.length())) : "Unknown");
+        log.setOs("Unknown");
         try {
             Map<String, Object> result = authService.login(request.getUsername(), request.getPassword());
+            log.setStatus("0");
+            log.setMsg("Login successful");
+            loginLogRepository.save(log);
             return ApiResponse.success(result);
         } catch (RuntimeException e) {
+            log.setStatus("1");
+            log.setMsg(e.getMessage());
+            loginLogRepository.save(log);
             return ApiResponse.error(500, e.getMessage());
         }
     }
