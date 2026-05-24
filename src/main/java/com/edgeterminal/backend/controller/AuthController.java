@@ -75,7 +75,7 @@ public class AuthController {
                 List.of(
                         buildChild("AlarmRecord", "record", "system/record/index", "Alarm Log", "form"),
                         buildChild("AlarmPeople", "people", "system/people/index", "Facial Information", "people"),
-                        buildChild("AlarmDevice", "device", "system/alarm/index", "Device Information", "phone"),
+                        buildChild("AlarmDevice", "device", "system/device/index", "Device Information", "phone"),
                         buildChild("AlarmArea", "area", "system/area/index", "Equipment area", "tree-table")
                 )));
 
@@ -136,7 +136,52 @@ public class AuthController {
 
     @GetMapping("/system/dict/data/type/{dictType}")
     public ApiResponse<List<Map<String, Object>>> getDictData(@PathVariable String dictType) {
-        return ApiResponse.success(new ArrayList<>());
+        List<Map<String, Object>> data = new ArrayList<>();
+        switch (dictType) {
+            case "v1_device_type":
+                data.add(dict("1", "IPC"));
+                data.add(dict("2", "NVR"));
+                data.add(dict("3", "DVR"));
+                break;
+            case "v1_manufacturer_type":
+                data.add(dict("1", "Hikvision"));
+                data.add(dict("5", "Dahua"));
+                data.add(dict("10", "Hikvision ISAPI"));
+                data.add(dict("99", "Other"));
+                break;
+            case "v1_streaming_protocol":
+                data.add(dict("7", "RTSP"));
+                data.add(dict("11", "RTMP"));
+                data.add(dict("12", "HLS"));
+                break;
+            case "v1_device_area":
+                data.add(dict("1", "Main Kitchen"));
+                data.add(dict("2", "Prep Area"));
+                data.add(dict("3", "Storage Room"));
+                data.add(dict("4", "Entrance"));
+                break;
+            case "v1_device_status":
+                data.add(dict("1", "Online"));
+                data.add(dict("0", "Offline"));
+                break;
+            case "v1_alarm_type":
+                data.add(dict("no_glove", "No Glove"));
+                data.add(dict("no_hairnet", "No Hairnet"));
+                data.add(dict("no_mask", "No Mask"));
+                break;
+            default:
+                break;
+        }
+        return ApiResponse.success(data);
+    }
+
+    private Map<String, Object> dict(String value, String label) {
+        Map<String, Object> d = new HashMap<>();
+        d.put("dictValue", value);
+        d.put("dictLabel", label);
+        d.put("value", value);
+        d.put("label", label);
+        return d;
     }
 
     @Data
