@@ -1,6 +1,8 @@
 package com.edgeterminal.backend.config;
 
+import com.edgeterminal.backend.entity.DeviceArea;
 import com.edgeterminal.backend.entity.User;
+import com.edgeterminal.backend.repository.DeviceAreaRepository;
 import com.edgeterminal.backend.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +16,7 @@ import org.springframework.stereotype.Component;
 public class DataInitializer implements CommandLineRunner {
 
     private final UserRepository userRepository;
+    private final DeviceAreaRepository deviceAreaRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Override
@@ -32,5 +35,23 @@ public class DataInitializer implements CommandLineRunner {
             log.info("Default admin user created — username: admin, password: admin123");
             log.info("Please change the default password after first login!");
         }
+
+        if (deviceAreaRepository.count() == 0) {
+            seedArea("1", "Main Kitchen", 1);
+            seedArea("2", "Prep Area", 2);
+            seedArea("3", "Storage Room", 3);
+            seedArea("4", "Entrance", 4);
+            log.info("Default device areas seeded");
+        }
+    }
+
+    private void seedArea(String value, String label, int sort) {
+        DeviceArea area = new DeviceArea();
+        area.setDictValue(value);
+        area.setDictLabel(label);
+        area.setDictSort(sort);
+        area.setDictType("v1_device_area");
+        area.setStatus("0");
+        deviceAreaRepository.save(area);
     }
 }

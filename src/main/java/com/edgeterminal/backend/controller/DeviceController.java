@@ -71,6 +71,15 @@ public class DeviceController {
         return ApiResponse.success("Device deleted successfully");
     }
 
+    @PutMapping("/{id}/status")
+    public ApiResponse<String> updateDeviceStatus(@PathVariable Long id, @RequestBody Map<String, Object> body) {
+        deviceRepository.findById(id).ifPresent(device -> {
+            device.setStatus((String) body.get("status"));
+            deviceRepository.save(device);
+        });
+        return ApiResponse.success("Status updated");
+    }
+
     @GetMapping("/taskStatus/audioStatus")
     public ApiResponse<String> audioStatus(@RequestParam String status) {
         return ApiResponse.success("Audio status updated");

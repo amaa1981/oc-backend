@@ -1,6 +1,8 @@
 package com.edgeterminal.backend.controller;
 
 import com.edgeterminal.backend.dto.ApiResponse;
+import com.edgeterminal.backend.entity.DeviceArea;
+import com.edgeterminal.backend.repository.DeviceAreaRepository;
 import com.edgeterminal.backend.service.AuthService;
 import com.edgeterminal.backend.util.JwtUtil;
 import jakarta.validation.Valid;
@@ -21,6 +23,7 @@ public class AuthController {
 
     private final AuthService authService;
     private final JwtUtil jwtUtil;
+    private final DeviceAreaRepository deviceAreaRepository;
 
     @PostMapping("/auth/login")
     public ApiResponse<Map<String, Object>> login(@Valid @RequestBody LoginRequest request) {
@@ -155,10 +158,9 @@ public class AuthController {
                 data.add(dict("12", "HLS"));
                 break;
             case "v1_device_area":
-                data.add(dict("1", "Main Kitchen"));
-                data.add(dict("2", "Prep Area"));
-                data.add(dict("3", "Storage Room"));
-                data.add(dict("4", "Entrance"));
+                for (DeviceArea area : deviceAreaRepository.findByDictTypeOrderByDictSortAsc("v1_device_area")) {
+                    data.add(dict(area.getDictValue(), area.getDictLabel()));
+                }
                 break;
             case "v1_device_status":
                 data.add(dict("1", "Online"));
