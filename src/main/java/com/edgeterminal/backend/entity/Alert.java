@@ -34,6 +34,9 @@ public class Alert {
     @Column(name = "status")
     private Integer status = 0;
 
+    @Column(name = "remarks")
+    private String remarks;
+
     @Column(name = "create_time")
     private LocalDateTime createTime;
 

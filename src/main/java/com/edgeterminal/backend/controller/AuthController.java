@@ -183,6 +183,20 @@ public class AuthController {
                 data.add(dict("1", "Online"));
                 data.add(dict("0", "Offline"));
                 break;
+            case "v1_sex":
+                data.add(dict("0", "Male"));
+                data.add(dict("1", "Female"));
+                data.add(dict("2", "Unknown"));
+                break;
+            case "v1_user_type":
+                data.add(dict("1", "Employee"));
+                data.add(dict("2", "Visitor"));
+                data.add(dict("3", "Contractor"));
+                break;
+            case "sys_common_status":
+                data.add(dict("0", "Success"));
+                data.add(dict("1", "Failed"));
+                break;
             case "v1_alarm_type":
                 data.add(dict("no_glove", "No Glove"));
                 data.add(dict("no_hairnet", "No Hairnet"));

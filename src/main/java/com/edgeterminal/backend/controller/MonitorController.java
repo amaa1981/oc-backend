@@ -38,14 +38,21 @@ public class MonitorController {
     public ApiResponse<Map<String, Object>> loginLogList(
             @RequestParam(defaultValue = "1") int pageNum,
             @RequestParam(defaultValue = "10") int pageSize,
-            @RequestParam(required = false) String userName) {
-        List<LoginLog> logs = userName != null && !userName.isEmpty()
-            ? loginLogRepository.findByUserNameContainingOrderByLoginTimeDesc(userName)
-            : loginLogRepository.findAllByOrderByLoginTimeDesc();
-        int total = logs.size();
+            @RequestParam(required = false) String userName,
+            @RequestParam(required = false) String ipaddr,
+            @RequestParam(required = false) String status,
+            @RequestParam(required = false) String beginTime,
+            @RequestParam(required = false) String endTime) {
+        List<LoginLog> all = loginLogRepository.findAllByOrderByLoginTimeDesc();
+        List<LoginLog> filtered = all.stream()
+            .filter(log -> userName == null || userName.isEmpty() || (log.getUserName() != null && log.getUserName().contains(userName)))
+            .filter(log -> ipaddr == null || ipaddr.isEmpty() || (log.getIpaddr() != null && log.getIpaddr().contains(ipaddr)))
+            .filter(log -> status == null || status.isEmpty() || status.equals(log.getStatus()))
+            .collect(java.util.stream.Collectors.toList());
+        int total = filtered.size();
         int start = (pageNum - 1) * pageSize;
         int end = Math.min(start + pageSize, total);
-        List<LoginLog> page = start < total ? logs.subList(start, end) : new ArrayList<>();
+        List<LoginLog> page = start < total ? filtered.subList(start, end) : new ArrayList<>();
         Map<String, Object> data = new HashMap<>();
         data.put("rows", page);
         data.put("total", total);
